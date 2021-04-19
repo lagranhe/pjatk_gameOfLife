@@ -288,8 +288,8 @@ public class ConwaysGameOfLife extends JFrame implements ActionListener {
             int szerokosc = gameBoard[0].length;
 
             //odczytujemy aktualny stan komórek tej rundy
-            for (int x = 0; x < dlugosc; x++) {
-                for (int y = 0; y < szerokosc; y++) {
+            for (int x = 1; x < dlugosc; x++) {
+                for (int y = 1; y < szerokosc; y++) {
 
                     //liczymy żywych sąsiadów
                     int lives = policzZywychSasiadow1(gameBoard, dlugosc, szerokosc, x, y);
@@ -311,14 +311,14 @@ public class ConwaysGameOfLife extends JFrame implements ActionListener {
             }
 
             //zmieniamy stan komórek przed następną rundą
-            for (int x = 0; x < dlugosc; x++) {
-                for (int y = 0; y < szerokosc; y++) {
+            for (int x = 1; x < dlugosc; x++) {
+                for (int y = 1; y < szerokosc; y++) {
                     gameBoard[x][y] >>= 1;  // zmieniamy stan komórki z terazniejszego na przyszły
                 }
             }
 
-            for (int x = 0; x < dlugosc; x++) {
-                for (int y = 0; y < szerokosc; y++) {
+            for (int x = 1; x < dlugosc; x++) {
+                for (int y = 1; y < szerokosc; y++) {
                     if (gameBoard[x][y] == 1){
                         survivingCells.add(new Point(x-1,y-1));
                     } else {
@@ -341,43 +341,43 @@ public class ConwaysGameOfLife extends JFrame implements ActionListener {
             int y;
 
             //1 komórka
-            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
-            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            x = (oX - 1) < 1 ? plansza.length - 1 : oX - 1;
+            y = (oY - 1) < 1 ? plansza[x].length - 1 : oY - 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //2 komórka
             x = oX;
-            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            y = (oY - 1) < 1 ? plansza[x].length - 1 : oY - 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //3 komórka
-            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
-            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            x = (oX + 1) > plansza.length-1 ? 1 : oX + 1;
+            y = (oY - 1) < 1 ? plansza[x].length - 1 : oY - 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //4 komórka
-            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+            x = (oX - 1) < 1 ? plansza.length - 1 : oX - 1;
             y = oY;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //6 komórka
-            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+            x = (oX + 1) > plansza.length-1 ? 1 : oX + 1;
             y = oY;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //7 komórka
-            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
-            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            x = (oX - 1) < 1 ? plansza.length - 1 : oX - 1;
+            y = (oY + 1) > plansza[x].length - 1 ? 1 : oY + 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //8 komórka
             x = oX;
-            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            y = (oY + 1) > plansza[x].length - 1 ? 1 : oY + 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             //9 komórka
-            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
-            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            x = (oX + 1) > plansza.length-1 ? 1 : oX + 1;
+            y = (oY + 1) > plansza[x].length - 1 ? 1 : oY + 1;
             if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
 
             return zywychSasiadow;
