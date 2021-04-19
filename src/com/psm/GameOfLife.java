@@ -44,13 +44,49 @@ public class GameOfLife {
 
     public int policzZywychSasiadow(int[][] plansza, int dlugosc, int szerokosc, int oX, int oY) {
         int zywychSasiadow = 0;
-        for (int x = Math.max(oX - 1, 0); x <= Math.min(oX + 1, dlugosc - 1); x++) {
-            for (int y = Math.max(oY - 1, 0); y <= Math.min(oY + 1, szerokosc - 1); y++) {
-                zywychSasiadow += plansza[x][y] & 1;
-            }
-        }
+        int x;
+        int y;
 
-        zywychSasiadow -= plansza[oX][oY] & 1;
+        //1 komórka
+        x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+        y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //2 komórka
+        x = oX;
+        y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //3 komórka
+        x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+        y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //4 komórka
+        x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+        y = oY;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //6 komórka
+        x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+        y = oY;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //7 komórka
+        x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+        y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //8 komórka
+        x = oX;
+        y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+        //9 komórka
+        x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+        y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+        if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
         return zywychSasiadow;
     }
 
@@ -70,4 +106,6 @@ public class GameOfLife {
         }
         System.out.println();
     }
+
+
 }
