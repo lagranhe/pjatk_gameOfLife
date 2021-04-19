@@ -277,36 +277,55 @@ public class ConwaysGameOfLife extends JFrame implements ActionListener {
 
         @Override
         public void run() {
-            boolean[][] gameBoard = new boolean[d_gameBoardSize.width+2][d_gameBoardSize.height+2];
+            int[][] gameBoard = new int[d_gameBoardSize.width+1][d_gameBoardSize.height+1];
             for (Point current : point) {
-                gameBoard[current.x+1][current.y+1] = true;
+                gameBoard[current.x+1][current.y+1] = 1;
             }
             ArrayList<Point> survivingCells = new ArrayList<Point>(0);
-            // Iterate through the array, follow game of life rules
-            for (int i=1; i<gameBoard.length-1; i++) {
-                for (int j=1; j<gameBoard[0].length-1; j++) {
-                    int surrounding = 0;
-                    if (gameBoard[i-1][j-1]) { surrounding++; }
-                    if (gameBoard[i-1][j])   { surrounding++; }
-                    if (gameBoard[i-1][j+1]) { surrounding++; }
-                    if (gameBoard[i][j-1])   { surrounding++; }
-                    if (gameBoard[i][j+1])   { surrounding++; }
-                    if (gameBoard[i+1][j-1]) { surrounding++; }
-                    if (gameBoard[i+1][j])   { surrounding++; }
-                    if (gameBoard[i+1][j+1]) { surrounding++; }
-                    if (gameBoard[i][j]) {
-                        // Cell is alive, Can the cell live? (2-3)
-                        if ((surrounding == 2) || (surrounding == 3)) {
-                            survivingCells.add(new Point(i-1,j-1));
-                        }
-                    } else {
-                        // Cell is dead, will the cell be given birth? (3)
-                        if (surrounding == 3) {
-                            survivingCells.add(new Point(i-1,j-1));
-                        }
+
+            if (gameBoard == null || gameBoard.length == 0) return;
+            int dlugosc = gameBoard.length;
+            int szerokosc = gameBoard[0].length;
+
+            //odczytujemy aktualny stan komórek tej rundy
+            for (int x = 0; x < dlugosc; x++) {
+                for (int y = 0; y < szerokosc; y++) {
+
+                    //liczymy żywych sąsiadów
+                    int lives = policzZywychSasiadow1(gameBoard, dlugosc, szerokosc, x, y);
+
+                    // jeśli komórka jest żywa i ilość sąsiadów jest 2 lub 3 to komórka zostaje żywa
+                    // Komórka jest żywa, czyli pierwszy bit = 1; ---> aktualny stan 01;
+                    if (gameBoard[x][y] == 1 && lives >= 2 && lives <= 3) {
+                        // Komórka będzie żyła. Robimy drugi bit równy 1 : 01 ---> 11
+                        gameBoard[x][y] = 3;
+                    }
+
+                    // jeśli komórka jest martwa i ilość sąsiadów jest 3 to komórka staje żywa
+                    // Komórka jest martwa, czyli pierwszy bit = 0; ---> aktualny stan 00
+                    if (gameBoard[x][y] == 0 && lives == 3) {
+                        // Komórka będzie żyła. Robimy drugi bit równy 1 : 00 ---> 10
+                        gameBoard[x][y] = 2;
                     }
                 }
             }
+
+            //zmieniamy stan komórek przed następną rundą
+            for (int x = 0; x < dlugosc; x++) {
+                for (int y = 0; y < szerokosc; y++) {
+                    gameBoard[x][y] >>= 1;  // zmieniamy stan komórki z terazniejszego na przyszły
+                }
+            }
+
+            for (int x = 0; x < dlugosc; x++) {
+                for (int y = 0; y < szerokosc; y++) {
+                    if (gameBoard[x][y] == 1){
+                        survivingCells.add(new Point(x-1,y-1));
+                    } else {
+                    }
+                }
+            }
+
             resetBoard();
             point.addAll(survivingCells);
             repaint();
@@ -314,6 +333,54 @@ public class ConwaysGameOfLife extends JFrame implements ActionListener {
                 Thread.sleep(1000/i_movesPerSecond);
                 run();
             } catch (InterruptedException ex) {}
+        }
+
+        public int policzZywychSasiadow1(int[][] plansza, int dlugosc, int szerokosc, int oX, int oY) {
+            int zywychSasiadow = 0;
+            int x;
+            int y;
+
+            //1 komórka
+            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //2 komórka
+            x = oX;
+            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //3 komórka
+            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+            y = (oY - 1) < 0 ? plansza[x].length - 1 : oY - 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //4 komórka
+            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+            y = oY;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //6 komórka
+            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+            y = oY;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //7 komórka
+            x = (oX - 1) < 0 ? plansza.length - 1 : oX - 1;
+            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //8 komórka
+            x = oX;
+            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            //9 komórka
+            x = (oX + 1) > plansza.length-1 ? 0 : oX + 1;
+            y = (oY + 1) > plansza[x].length - 1 ? 0 : oY + 1;
+            if ((plansza[x][y] & 1) == 1) zywychSasiadow++;
+
+            return zywychSasiadow;
         }
     }
 }
